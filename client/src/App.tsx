@@ -1,18 +1,47 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import LoginPage from './pages/LoginPage';
+import React, { useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import SignInPage from './pages/SignInPage';
 import { Container } from '@mui/material';
 import ChatPage from './pages/ChatPage';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from './store/store';
+import { restoreSessionWithJwt } from './store/auth';
 
 function App() {
+  const auth = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      dispatch(restoreSessionWithJwt({ token }));
+    }
+  }, []);
+
+  if (!auth.isLogged) {
+    return (
+      <Container>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<div>Home page for not authorized users</div>} />
+            <Route path="auth">
+              <Route path="sign-in" element={<SignInPage />} />
+              <Route path="sign-up" element={<div>Sign up</div>} />
+            </Route>
+            <Route path="*" element={<Navigate to="/" replace={true} />} />
+          </Routes>
+        </BrowserRouter>
+      </Container>
+    );
+  }
+
   return (
     <Container>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<div>Index</div>} />
+          <Route path="/" element={<div>Home page for authorized user</div>} />
           <Route path="auth">
-            <Route path="login" element={<LoginPage />} />
-            <Route path="sign-up" element={<div>Sign up</div>} />
             <Route path="logout" element={<div>Logout</div>} />
           </Route>
           <Route path="chats">

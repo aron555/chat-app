@@ -1,13 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import io, { Socket } from 'socket.io-client';
+import { Message } from '../store/types';
 
 const SERVER_HOST: string = process.env.REACT_APP_WS_SERVER_HOST || 'http://localhost:7777';
-
-export interface Message {
-  userId: string;
-  message: string;
-  date: number;
-}
 
 export const useChat = (chatId: string | undefined) => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -26,7 +21,7 @@ export const useChat = (chatId: string | undefined) => {
 
     socketRef.current.on('message', (message: Message) => {
       console.log('got message from server', message);
-      setMessages((prev) => ([ ...prev, message ]));
+      setMessages((prev) => [...prev, message]);
     });
 
     return () => {
