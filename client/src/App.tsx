@@ -40,7 +40,6 @@ function App() {
     <Container>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<div>Home page for authorized user</div>} />
           <Route path="auth">
             <Route path="logout" element={<div>Logout</div>} />
           </Route>
@@ -53,6 +52,7 @@ function App() {
             </Route>
             <Route index element={<div>Chats list</div>} />
           </Route>
+          <Route path="*" element={<Navigate to="/chats" replace={true} />} />
         </Routes>
       </BrowserRouter>
     </Container>

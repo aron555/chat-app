@@ -11,3 +11,9 @@ export interface User {
   profileImage: string;
   description: string;
 }
+
+export interface SignInResponse {
+  data: {
+    jwt: string;
+  }
+}

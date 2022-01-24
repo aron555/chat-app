@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { User } from './types';
+import { SignInResponse, User } from './types';
 import axios from 'axios';
 
 export interface AuthState {
@@ -20,9 +20,18 @@ export const authSlice = createSlice({
   reducers: {
     signIn: (state, action: PayloadAction<{ username: string; password: string }>) => {
       axios
-        .post(API_HOST + '/api/auth/sign-in', action.payload)
+        .post<SignInResponse>(API_HOST + '/api/auth/sign-in', action.payload)
         .then((response) => {
           console.log(response);
+
+          const data = response.data.data;
+
+          if (!data.jwt) return;
+
+          // Need to implement async to redux, use redux-thunk
+          // state.isLogged = true;
+
+          localStorage.setItem('token', data.jwt);
         })
         .catch((error) => {
           console.log(error);
