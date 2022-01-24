@@ -1,7 +1,8 @@
 import React, { FC, useRef } from 'react';
 import { Box } from '@mui/material';
 import { useParams } from 'react-router-dom';
-import { Message, useChat } from '../hooks/useChat';
+import { useChat } from '../hooks/useChat';
+import { Message } from '../store/types';
 
 const ChatPage: FC = () => {
   const { chatId } = useParams();
