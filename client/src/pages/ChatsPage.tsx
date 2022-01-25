@@ -1,5 +1,5 @@
 import React, { FC, useEffect } from 'react';
-import { Box, Tab, Tabs, Typography, CircularProgress } from '@mui/material';
+import { Box, Tab, Tabs, Typography, CircularProgress, Avatar } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { getUserChatsByToken } from '../store/chats';
@@ -58,11 +58,11 @@ const ChatsPage: FC = () => {
         orientation="vertical"
         variant="scrollable"
         value={chatId || ''}
-        sx={{ borderRight: 1, width: 'max(300px, 20%)', borderColor: 'divider' }}
+        sx={{ borderRight: 1, width: 'max(350px, 20%)', borderColor: 'divider', padding: 0 }}
       >
         <Tab
           value={''}
-          sx={{ alignItems: 'flex-start' }}
+          sx={{ alignItems: 'flex-start', padding: 0 }}
           label={
             <Link
               to={`/chats`}
@@ -71,9 +71,16 @@ const ChatsPage: FC = () => {
                 color: 'unset',
                 textAlign: 'left',
                 textTransform: 'none',
+                padding: '12px 16px',
+                width: '100%',
               }}
             >
-              {user && <Typography>{user.fullname || `@${user.username}`}</Typography>}
+              {user && (
+                <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                  <Avatar src={user.profileImage || undefined} />
+                  <Typography sx={{ ml: '8px' }}>{user.fullname || `@${user.username}`}</Typography>
+                </Box>
+              )}
             </Link>
           }
         />
@@ -83,7 +90,7 @@ const ChatsPage: FC = () => {
               <Tab
                 key={chat.id}
                 value={chat.id}
-                sx={{ alignItems: 'flex-start' }}
+                sx={{ alignItems: 'flex-start', padding: 0 }}
                 label={
                   <Link
                     to={`/chats/${chat.id}`}
@@ -92,6 +99,8 @@ const ChatsPage: FC = () => {
                       color: 'unset',
                       textAlign: 'left',
                       textTransform: 'none',
+                      padding: '12px 16px',
+                      width: '100%',
                     }}
                   >
                     {chat.name}
