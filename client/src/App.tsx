@@ -5,7 +5,8 @@ import { Container } from '@mui/material';
 import ChatPage from './pages/ChatPage';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './store/store';
-import { restoreSessionWithJwt } from './store/auth';
+import SignUpPage from './pages/SignUpPage';
+// import { restoreSessionWithJwt } from './store/auth';
 
 function App() {
   const auth = useSelector((state: RootState) => state.auth);
@@ -15,7 +16,7 @@ function App() {
     const token = localStorage.getItem('token');
 
     if (token) {
-      dispatch(restoreSessionWithJwt({ token }));
+      // dispatch(restoreSessionWithJwt({ token }));
     }
   }, []);
 
@@ -27,7 +28,7 @@ function App() {
             <Route path="/" element={<div>Home page for not authorized users</div>} />
             <Route path="auth">
               <Route path="sign-in" element={<SignInPage />} />
-              <Route path="sign-up" element={<div>Sign up</div>} />
+              <Route path="sign-up" element={<SignUpPage />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace={true} />} />
           </Routes>
