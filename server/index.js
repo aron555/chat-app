@@ -60,7 +60,7 @@ io.on('connection', (socket) => {
 
     console.log('message:send', { user, message });
 
-    io.to(user.chatId).emit('message', formatMessage(user.userId, message.message));
+    io.to(user.chatId).emit('message', formatMessage(user.userId, message.chatId, message.content));
   });
 
   socket.on('disconnect', () => {

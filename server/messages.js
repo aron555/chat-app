@@ -1,7 +1,8 @@
-function formatMessage(userId, message) {
+function formatMessage(userId, chatId, content) {
   return {
     userId,
-    message,
+    chatId,
+    content,
     date: Date.now(),
   };
 }
