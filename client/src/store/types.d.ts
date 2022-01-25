@@ -12,8 +12,11 @@ export interface User {
   description: string;
 }
 
-export interface SignInResponse {
-  data: {
-    jwt: string;
-  }
+export interface ApiResponse<Type> {
+  data?: Type & { error?: message };
+  statusCode?: number;
 }
+
+export type SignInResponse = ApiResponse<{ jwt: string }>;
+
+export type GetUserInfoByTokenResponse = ApiResponse<{ user: User }>;

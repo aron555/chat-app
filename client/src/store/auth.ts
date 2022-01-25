@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { SignInResponse, User } from './types';
+import { GetUserInfoByTokenResponse, SignInResponse, User } from './types';
 import axios from 'axios';
 
 export interface AuthState {
@@ -9,7 +9,7 @@ export interface AuthState {
 
 const initialState: AuthState = {
   user: null,
-  isLogged: false,
+  isLogged: !!localStorage.getItem('token'),
 };
 
 const API_HOST = process.env.REACT_APP_API_HOST || 'http://chat.test';
@@ -27,7 +27,7 @@ export const signIn = createAsyncThunk<
 
     const data = signInResponse.data.data;
 
-    if (!data.jwt) throw new Error();
+    if (!data?.jwt) throw new Error();
 
     localStorage.setItem('token', data.jwt);
 
@@ -41,7 +41,7 @@ export const signUp = createAsyncThunk<
   { message: string },
   { username: string; password: string },
   { rejectValue: { message: string } }
-  >('auth/signUp', async ({ username, password }, { rejectWithValue }) => {
+>('auth/signUp', async ({ username, password }, { rejectWithValue }) => {
   try {
     const signInResponse = await axios.post<SignInResponse>(API_HOST + '/api/auth/sign-up', {
       username,
@@ -50,7 +50,7 @@ export const signUp = createAsyncThunk<
 
     const data = signInResponse.data.data;
 
-    if (!data.jwt) throw new Error();
+    if (!data?.jwt) throw new Error();
 
     localStorage.setItem('token', data.jwt);
 
@@ -60,15 +60,32 @@ export const signUp = createAsyncThunk<
   }
 });
 
+export const getUserInfoByToken = createAsyncThunk<
+  { user: User },
+  { token: string },
+  { rejectValue: { message: string } }
+>('auth/getUserInfoByToken', async ({ token }, { rejectWithValue }) => {
+  try {
+    const currentUser = await axios.get<GetUserInfoByTokenResponse>(API_HOST + '/api/users/me', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const data = currentUser.data.data;
+
+    if (!data?.user) throw new Error();
+
+    const user = data.user;
+
+    return { user };
+  } catch (error: any) {
+    return rejectWithValue({ message: 'Failed to get current user info' });
+  }
+});
+
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    // restoreSessionWithJwt: (state, action: PayloadAction<{ token: string }>) => {
-    //   console.log('restore session with jwt', action.payload.token);
-    //
-    //   // TODO: Fetch /me
-    // },
     logout: (state) => {
       localStorage.removeItem('token');
 
@@ -88,6 +105,15 @@ export const authSlice = createSlice({
     });
     builder.addCase(signUp.rejected, (state, action) => {
       state.isLogged = false;
+    });
+
+    builder.addCase(getUserInfoByToken.fulfilled, (state, action) => {
+      state.isLogged = true;
+      state.user = action.payload.user;
+    });
+    builder.addCase(getUserInfoByToken.rejected, (state, action) => {
+      state.isLogged = false;
+      alert('Failed to get current user info');
     });
   },
 });

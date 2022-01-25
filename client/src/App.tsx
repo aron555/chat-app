@@ -6,7 +6,7 @@ import ChatPage from './pages/ChatPage';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './store/store';
 import SignUpPage from './pages/SignUpPage';
-// import { restoreSessionWithJwt } from './store/auth';
+import { getUserInfoByToken } from './store/auth';
 
 function App() {
   const auth = useSelector((state: RootState) => state.auth);
@@ -16,7 +16,7 @@ function App() {
     const token = localStorage.getItem('token');
 
     if (token) {
-      // dispatch(restoreSessionWithJwt({ token }));
+      dispatch(getUserInfoByToken({ token }));
     }
   }, []);
 
