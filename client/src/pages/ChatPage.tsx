@@ -1,11 +1,13 @@
 import React, { FC, useRef } from 'react';
 import { Box } from '@mui/material';
-import { useParams } from 'react-router-dom';
 import { useChat } from '../hooks/useChat';
 import { Message } from '../store/types';
 
-const ChatPage: FC = () => {
-  const { chatId } = useParams();
+export interface ChatPageProps {
+  chatId: string;
+}
+
+const ChatPage: FC<ChatPageProps> = ({ chatId }) => {
   const { messages, sendMessage } = useChat(chatId);
   const messageRef = useRef<HTMLInputElement>(null);
 

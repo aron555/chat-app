@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { getUserChatsByToken } from '../store/chats';
 import { Link, useParams } from 'react-router-dom';
+import ChatPage from "./ChatPage";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -35,7 +36,19 @@ const ChatsPage: FC = () => {
   }, []);
 
   if (chatsState.isLoading) {
-    return <CircularProgress color="inherit" />;
+    return (
+      <Box
+        sx={{
+          width: '100%',
+          height: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <CircularProgress color="inherit" />
+      </Box>
+    );
   }
 
   return (
@@ -70,7 +83,7 @@ const ChatsPage: FC = () => {
             );
           })}
       </Tabs>
-      <TabPanel>{chatId}</TabPanel>
+      <TabPanel>{chatId && <ChatPage chatId={chatId} />}</TabPanel>
     </Box>
   );
 };
