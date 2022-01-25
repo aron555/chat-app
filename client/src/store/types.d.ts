@@ -1,9 +1,3 @@
-export interface Message {
-  user: User;
-  message: string;
-  date: number;
-}
-
 export interface User {
   id: string;
   username: string;
@@ -18,6 +12,22 @@ export interface Chat {
   name: string;
 }
 
+export enum ContentType {
+  Text,
+  Image,
+  Video,
+  Sticker,
+}
+
+export interface Message {
+  id: string;
+  userId: string;
+  chatId: string;
+  content: string;
+  contentType: ContentType;
+  date: string;
+}
+
 export interface ApiResponse<Type> {
   data?: Type & { error?: message };
   statusCode?: number;
@@ -30,3 +40,5 @@ export type SignInResponse = ApiResponse<{ jwt: string }>;
 export type GetUserInfoByTokenResponse = ApiResponse<{ user: User }>;
 
 export type GetUserChatsResponse = ApiResponse<{ chats: Chat[] }>;
+
+export type GetChatMessages = ApiResponse<{ messages: Message[] }>;
