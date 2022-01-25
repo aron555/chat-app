@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { SignInResponse, User } from './types';
 import axios from 'axios';
 
@@ -14,51 +14,84 @@ const initialState: AuthState = {
 
 const API_HOST = process.env.REACT_APP_API_HOST || 'http://chat.test';
 
+export const signIn = createAsyncThunk<
+  { message: string },
+  { username: string; password: string },
+  { rejectValue: { message: string } }
+>('auth/signIn', async ({ username, password }, { rejectWithValue }) => {
+  try {
+    const signInResponse = await axios.post<SignInResponse>(API_HOST + '/api/auth/sign-in', {
+      username,
+      password,
+    });
+
+    const data = signInResponse.data.data;
+
+    if (!data.jwt) throw new Error();
+
+    localStorage.setItem('token', data.jwt);
+
+    return { message: 'Logged in' };
+  } catch (error: any) {
+    return rejectWithValue({ message: 'Failed to sign in' });
+  }
+});
+
+export const signUp = createAsyncThunk<
+  { message: string },
+  { username: string; password: string },
+  { rejectValue: { message: string } }
+  >('auth/signUp', async ({ username, password }, { rejectWithValue }) => {
+  try {
+    const signInResponse = await axios.post<SignInResponse>(API_HOST + '/api/auth/sign-up', {
+      username,
+      password,
+    });
+
+    const data = signInResponse.data.data;
+
+    if (!data.jwt) throw new Error();
+
+    localStorage.setItem('token', data.jwt);
+
+    return { message: 'Logged in' };
+  } catch (error: any) {
+    return rejectWithValue({ message: 'Failed to sign up' });
+  }
+});
+
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    signIn: (state, action: PayloadAction<{ username: string; password: string }>) => {
-      axios
-        .post<SignInResponse>(API_HOST + '/api/auth/sign-in', action.payload)
-        .then((response) => {
-          console.log(response);
-
-          const data = response.data.data;
-
-          if (!data.jwt) return;
-
-          // Need to implement async to redux, use redux-thunk
-          // state.isLogged = true;
-
-          localStorage.setItem('token', data.jwt);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    signUp: (state, action: PayloadAction<{ username: string; password: string }>) => {
-      axios
-        .post(API_HOST + '/api/auth/sign-up', action.payload)
-        .then((response) => {
-          console.log(response);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
-    restoreSessionWithJwt: (state, action: PayloadAction<{ token: string }>) => {
-      console.log('restore session with jwt', action.payload.token);
-
-      // TODO: Fetch /me
-    },
+    // restoreSessionWithJwt: (state, action: PayloadAction<{ token: string }>) => {
+    //   console.log('restore session with jwt', action.payload.token);
+    //
+    //   // TODO: Fetch /me
+    // },
     logout: (state) => {
       localStorage.removeItem('token');
+
       state.isLogged = false;
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(signIn.fulfilled, (state, action) => {
+      state.isLogged = true;
+    });
+    builder.addCase(signIn.rejected, (state, action) => {
+      state.isLogged = false;
+    });
+
+    builder.addCase(signUp.fulfilled, (state, action) => {
+      state.isLogged = true;
+    });
+    builder.addCase(signUp.rejected, (state, action) => {
+      state.isLogged = false;
+    });
+  },
 });
 
-export const { signIn, signUp, restoreSessionWithJwt, logout } = authSlice.actions;
+export const { logout } = authSlice.actions;
 
 export default authSlice.reducer;
