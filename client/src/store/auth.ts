@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { GetUserInfoByTokenResponse, SignInResponse, User } from './types';
+import { API_HOST, GetUserInfoByTokenResponse, SignInResponse, User } from './types.d';
 import axios from 'axios';
 
 export interface AuthState {
@@ -11,8 +11,6 @@ const initialState: AuthState = {
   user: null,
   isLogged: !!localStorage.getItem('token'),
 };
-
-const API_HOST = process.env.REACT_APP_API_HOST || 'http://chat.test';
 
 export const signIn = createAsyncThunk<
   { message: string },

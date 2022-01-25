@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './store/store';
 import SignUpPage from './pages/SignUpPage';
 import { getUserInfoByToken } from './store/auth';
+import ChatsPage from './pages/ChatsPage';
 
 function App() {
   const auth = useSelector((state: RootState) => state.auth);
@@ -51,7 +52,7 @@ function App() {
               <Route path="participants" element={<div>Chat participants</div>} />
               <Route index element={<ChatPage />} />
             </Route>
-            <Route index element={<div>Chats list</div>} />
+            <Route index element={<ChatsPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/chats" replace={true} />} />
         </Routes>
