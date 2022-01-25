@@ -26,7 +26,7 @@ export interface Message {
   chatId: string;
   content: string;
   contentType: ContentType;
-  date: string;
+  createdAt: string;
 }
 
 export interface ApiResponse<Type> {
