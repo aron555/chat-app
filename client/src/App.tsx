@@ -50,7 +50,7 @@ function App() {
             <Route path=":chatId">
               <Route path="details" element={<div>Chat details</div>} />
               <Route path="participants" element={<div>Chat participants</div>} />
-              <Route index element={<ChatPage />} />
+              <Route index element={<ChatsPage />} />
             </Route>
             <Route index element={<ChatsPage />} />
           </Route>
