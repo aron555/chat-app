@@ -1,7 +1,17 @@
-import React, {FC, useMemo, useRef} from 'react';
-import {Box, CircularProgress} from '@mui/material';
+import React, { FC, useMemo, useRef } from 'react';
+import {
+  Avatar,
+  Box,
+  Card,
+  CardContent,
+  CardHeader,
+  CardMedia,
+  CircularProgress,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { useChat } from '../hooks/useChat';
-import { Message } from '../store/types';
+import { ContentType, Message } from '../store/types';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { getChatMessages } from '../store/chat';
@@ -18,14 +28,11 @@ const ChatPage: FC<ChatPageProps> = ({ chatId }) => {
   const messageRef = useRef<HTMLInputElement>(null);
 
   useMemo(() => {
-    console.log('get messages');
-
     const token = localStorage.getItem('token');
 
     if (!token) return;
 
-    // FIXME: Circular loop here
-    // dispatch(getChatMessages({ token, chatId }));
+    dispatch(getChatMessages({ token, chatId }));
   }, [chatId]);
 
   const handleSendMessage = () => {
@@ -56,12 +63,44 @@ const ChatPage: FC<ChatPageProps> = ({ chatId }) => {
 
   return (
     <Box>
-      {chat.messages && chat.messages.map((message: Message) => (
-        <div key={message.date}>{message.userId}: {message.content}</div>
+      <Stack spacing={2}>
+        {chat?.messages &&
+          chat.messages.map((message: Message) => {
+            switch (+message.contentType) {
+              case ContentType.Image:
+                return (
+                  <Card key={message.id}>
+                    <CardHeader
+                      avatar={<Avatar />}
+                      title={message.userId}
+                      subheader={message.date}
+                    />
+                    <CardMedia component="img" image={message.content} />
+                  </Card>
+                );
+              default:
+                return (
+                  <Card key={message.id}>
+                    <CardHeader
+                      avatar={<Avatar />}
+                      title={message.userId}
+                      subheader={message.date}
+                    />
+                    <CardContent>
+                      <Typography variant="body2">
+                        {message.content}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                );
+            }
+          })}
+      </Stack>
+      {messages.map((message: Message) => (
+        <div key={message.id}>
+          {message.userId} {message.content}
+        </div>
       ))}
-      {/*{messages.map((message: Message) => (*/}
-      {/*  <div key={message.date}>{message.message}</div>*/}
-      {/*))}*/}
       <input ref={messageRef} />
       <button onClick={handleSendMessage}>Send</button>
     </Box>
