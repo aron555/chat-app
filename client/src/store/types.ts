@@ -22,6 +22,7 @@ export enum ContentType {
 export interface Message {
   id: string;
   userId: string;
+  user?: User;
   chatId: string;
   content: string;
   contentType: ContentType;
@@ -29,7 +30,7 @@ export interface Message {
 }
 
 export interface ApiResponse<Type> {
-  data?: Type & { error?: message };
+  data?: Type & { error?: Message };
   statusCode?: number;
 }
 

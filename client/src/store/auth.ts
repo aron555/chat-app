@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { API_HOST, GetUserInfoByTokenResponse, SignInResponse, User } from './types.d';
+import { API_HOST, GetUserInfoByTokenResponse, SignInResponse, User } from './types';
 import axios from 'axios';
 
 export interface AuthState {

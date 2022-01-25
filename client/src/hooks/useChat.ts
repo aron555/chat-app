@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import io, { Socket } from 'socket.io-client';
-import { ContentType, Message } from '../store/types.d';
+import { ContentType, Message } from '../store/types';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 
