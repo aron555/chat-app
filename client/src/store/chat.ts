@@ -14,9 +14,9 @@ const initialState: ChatState = {
 
 export const getChatMessages = createAsyncThunk<
   { messages: Message[] },
-  { token: string, chatId: string },
+  { token: string; chatId: string },
   { rejectValue: { message: string } }
-  >('chats/getUserChats', async ({ token, chatId }, { rejectWithValue }) => {
+>('chats/getChatMessages', async ({ token, chatId }, { rejectWithValue }) => {
   try {
     const userChats = await axios.get<GetChatMessages>(API_HOST + `/api/chats/${chatId}/messages`, {
       headers: { Authorization: `Bearer ${token}` },
