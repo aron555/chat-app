@@ -1,4 +1,4 @@
-import {API_HOST, Chat, GetChatMessages, Message} from './types.d';
+import {API_HOST, GetChatMessages, Message} from './types.d';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
