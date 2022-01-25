@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { getUserChatsByToken } from '../store/chats';
 import { Link, useParams } from 'react-router-dom';
-import ChatPage from "./ChatPage";
+import ChatPage from './ChatPage';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -25,7 +25,8 @@ function TabPanel(props: TabPanelProps) {
 const ChatsPage: FC = () => {
   const { chatId } = useParams();
   const dispatch = useDispatch();
-  const chatsState = useSelector((state: RootState) => state.chats);
+  const chats = useSelector((state: RootState) => state.chats);
+  const user = useSelector((state: RootState) => state.auth.user);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -35,7 +36,7 @@ const ChatsPage: FC = () => {
     dispatch(getUserChatsByToken({ token }));
   }, []);
 
-  if (chatsState.isLoading) {
+  if (chats.isLoading) {
     return (
       <Box
         sx={{
@@ -59,8 +60,25 @@ const ChatsPage: FC = () => {
         value={chatId || ''}
         sx={{ borderRight: 1, width: 'max(300px, 20%)', borderColor: 'divider' }}
       >
-        {chatsState?.chats &&
-          chatsState.chats.map((chat) => {
+        <Tab
+          value={''}
+          sx={{ alignItems: 'flex-start' }}
+          label={
+            <Link
+              to={`/chats`}
+              style={{
+                textDecoration: 'none',
+                color: 'unset',
+                textAlign: 'left',
+                textTransform: 'none',
+              }}
+            >
+              {user && <Typography>{user.fullname || `@${user.username}`}</Typography>}
+            </Link>
+          }
+        />
+        {chats?.chats &&
+          chats.chats.map((chat) => {
             return (
               <Tab
                 key={chat.id}
@@ -83,7 +101,11 @@ const ChatsPage: FC = () => {
             );
           })}
       </Tabs>
-      <TabPanel>{chatId && <ChatPage chatId={chatId} />}</TabPanel>
+      {chatId === '' || !chatId ? (
+        <TabPanel>Select a chat to start messaging</TabPanel>
+      ) : (
+        <TabPanel>{chatId && <ChatPage chatId={chatId} />}</TabPanel>
+      )}
     </Box>
   );
 };
