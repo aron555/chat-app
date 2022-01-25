@@ -16,7 +16,7 @@ function TabPanel(props: TabPanelProps) {
   return (
     <div role="tabpanel" style={{ width: '100%', backgroundColor: '#eee' }} {...other}>
       <Box sx={{ p: 3 }}>
-        <Typography>{children}</Typography>
+        {children}
       </Box>
     </div>
   );
