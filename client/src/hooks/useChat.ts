@@ -9,15 +9,26 @@ const SERVER_HOST: string = process.env.REACT_APP_WS_SERVER_HOST || 'http://loca
 export const useChat = (chatId: string | undefined) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const user = useSelector((state: RootState) => state.auth);
+  const chats = useSelector((state: RootState) => state.chats);
 
   const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
     if (!user.isLogged || !user?.user) return;
+    if (chats.isLoading || !chats?.chats) return;
 
     socketRef.current = io(SERVER_HOST);
 
-    socketRef.current.emit('chat:join', { userId: user.user.id, token: 'token', chatId });
+    // socketRef.current.emit('chat:join', { userId: user.user.id, token: 'token', chatId });
+
+    // Join every chat user participate in
+    for (const chat of chats.chats) {
+      socketRef.current.emit('chat:join', {
+        userId: user.user.id,
+        token: 'token',
+        chatId: chat.id,
+      });
+    }
 
     // socketRef.current.on('users', (users) => {
     //   setUsers(users);
@@ -25,14 +36,17 @@ export const useChat = (chatId: string | undefined) => {
 
     socketRef.current.on('message', (message: Message) => {
       console.log('got message from server', message);
-      setMessages((prev) => [...prev, message]);
+
+      if (message.chatId === chatId) {
+        setMessages((prev) => [...prev, message]);
+      }
     });
 
     return () => {
       // @ts-ignore
       socketRef.current.disconnect();
     };
-  }, [chatId, user]);
+  }, [chats, user]);
 
   const sendMessage = (messageText: string) => {
     if (!user.isLogged || !user?.user) return;
