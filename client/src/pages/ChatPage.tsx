@@ -96,7 +96,9 @@ const ChatPage: FC<ChatPageProps> = ({ chatId }) => {
                 )}
                 {+message.contentType === ContentType.Text && (
                   <CardContent>
-                    <Typography variant="body2">{message.content}</Typography>
+                    <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
+                      {message.content}
+                    </Typography>
                   </CardContent>
                 )}
               </Card>
