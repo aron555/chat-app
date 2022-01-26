@@ -1,5 +1,5 @@
 import React, { FC, useEffect } from 'react';
-import { Box, Tab, Tabs, Typography, CircularProgress, Avatar } from '@mui/material';
+import { Box, Tab, Tabs, Typography, CircularProgress, Avatar, Chip } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { getUserChatsByToken } from '../store/chats';
@@ -14,10 +14,8 @@ function TabPanel(props: TabPanelProps) {
   const { children, ...other } = props;
 
   return (
-    <div role="tabpanel" style={{ width: '100%', backgroundColor: '#eee' }} {...other}>
-      <Box sx={{ p: 3 }}>
-        {children}
-      </Box>
+    <div role="tabpanel" style={{ width: '100%', backgroundColor: '#e6ebee' }} {...other}>
+      <Box sx={{ height: '100vh', borderRight: 1, borderColor: 'divider' }}>{children}</Box>
     </div>
   );
 }
@@ -58,11 +56,17 @@ const ChatsPage: FC = () => {
         orientation="vertical"
         variant="scrollable"
         value={chatId || ''}
-        sx={{ borderRight: 1, width: 'max(350px, 20%)', borderColor: 'divider', padding: 0 }}
+        sx={{
+          borderLeft: 1,
+          borderRight: 1,
+          width: 'max(350px, 20%)',
+          borderColor: 'divider',
+          padding: 0,
+        }}
       >
         <Tab
           value={''}
-          sx={{ alignItems: 'flex-start', padding: 0 }}
+          sx={{ alignItems: 'flex-start', padding: 0, borderBottom: 1, borderColor: 'divider' }}
           label={
             <Link
               to={`/chats`}
@@ -111,7 +115,13 @@ const ChatsPage: FC = () => {
           })}
       </Tabs>
       {chatId === '' || !chatId ? (
-        <TabPanel>Select a chat to start messaging</TabPanel>
+        <TabPanel>
+          <Box
+            sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}
+          >
+            <Chip label="Select a chat to start messaging" />
+          </Box>
+        </TabPanel>
       ) : (
         <TabPanel>{chatId && <ChatPage chatId={chatId} />}</TabPanel>
       )}

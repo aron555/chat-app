@@ -35,10 +35,10 @@ const AlwaysScrollToBottom = () => {
 
 const ChatPage: FC<ChatPageProps> = ({ chatId }) => {
   const chat = useSelector((state: RootState) => state.chat);
+  const user = useSelector((state: RootState) => state.auth.user);
   const dispatch = useDispatch();
 
   const { messages, sendMessage } = useChat(chatId);
-  const messageRef = useRef<HTMLInputElement>(null);
 
   useMemo(() => {
     const token = localStorage.getItem('token');
@@ -47,16 +47,6 @@ const ChatPage: FC<ChatPageProps> = ({ chatId }) => {
 
     dispatch(getChatMessages({ token, chatId }));
   }, [chatId]);
-
-  const handleSendMessage = () => {
-    if (!messageRef.current) return;
-
-    const value = messageRef.current.value;
-
-    if (!value.length) return;
-
-    sendMessage(value);
-  };
 
   if (chat.isLoading) {
     return (
@@ -75,12 +65,27 @@ const ChatPage: FC<ChatPageProps> = ({ chatId }) => {
   }
 
   return (
-    <Box>
-      <Box sx={{ maxHeight: '80vh', overflow: 'hidden auto' }}>
-        <Stack spacing={2}>
+    <Box sx={{ height: '100vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+      <Box
+        sx={{
+          height: '64px',
+          minHeight: '64px',
+          backgroundColor: '#fff',
+          borderBottom: 1,
+          borderColor: 'divider',
+        }}
+      ></Box>
+      <Box className="chatMessagesContainer" sx={{ height: '100%', overflow: 'hidden auto' }}>
+        <Stack spacing={2} sx={{ m: 1 }}>
           {chat?.messages &&
             [...chat.messages, ...messages].map((message: Message) => (
-              <Card key={message.id}>
+              <Card
+                key={message.id}
+                sx={{
+                  width: 'min(400px, 100%)',
+                  alignSelf: user?.id === message.userId ? 'end' : 'start',
+                }}
+              >
                 <CardHeader
                   avatar={<Avatar />}
                   title={message.userId}
@@ -99,7 +104,7 @@ const ChatPage: FC<ChatPageProps> = ({ chatId }) => {
           <AlwaysScrollToBottom />
         </Stack>
       </Box>
-      <Box sx={{p: 1}}>
+      <Box sx={{ p: 1 }}>
         <MessageForm sendMessage={sendMessage} />
       </Box>
     </Box>

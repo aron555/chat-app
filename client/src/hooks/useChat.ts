@@ -4,7 +4,9 @@ import { ContentType, Message } from '../store/types';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 
-const SERVER_HOST: string = process.env.REACT_APP_WS_SERVER_HOST || 'http://localhost:7777';
+const WS_SERVER_HOST: string = process.env.REACT_APP_WS_SERVER_HOST || 'http://localhost:7777';
+
+export type SendMessage = (messageText: string) => void;
 
 export const useChat = (chatId: string | undefined) => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -17,7 +19,7 @@ export const useChat = (chatId: string | undefined) => {
     if (!user.isLogged || !user?.user) return;
     if (chats.isLoading || !chats?.chats) return;
 
-    socketRef.current = io(SERVER_HOST);
+    socketRef.current = io(WS_SERVER_HOST);
 
     // socketRef.current.emit('chat:join', { userId: user.user.id, token: 'token', chatId });
 
@@ -48,7 +50,7 @@ export const useChat = (chatId: string | undefined) => {
     };
   }, [chats, user]);
 
-  const sendMessage = (messageText: string) => {
+  const sendMessage: SendMessage = (messageText) => {
     if (!user.isLogged || !user?.user) return;
 
     // @ts-ignore

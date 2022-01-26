@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import SignInPage from './pages/SignInPage';
 import { Container } from '@mui/material';
-import ChatPage from './pages/ChatPage';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './store/store';
 import SignUpPage from './pages/SignUpPage';
@@ -31,7 +30,7 @@ function App() {
               <Route path="sign-in" element={<SignInPage />} />
               <Route path="sign-up" element={<SignUpPage />} />
             </Route>
-            <Route path="*" element={<Navigate to="/" replace={true} />} />
+            <Route path="*" element={<Navigate to="/auth/sign-in" replace={true} />} />
           </Routes>
         </BrowserRouter>
       </Container>

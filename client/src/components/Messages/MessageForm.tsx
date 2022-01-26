@@ -1,6 +1,7 @@
 import React, { FC, FormEvent, useEffect, useRef, useState } from 'react';
 import { Button, Stack, TextField } from '@mui/material';
 import { SendMessage } from '../../hooks/useChat';
+import SendIcon from '@mui/icons-material/Send';
 
 export interface MessageFormProps {
   sendMessage: SendMessage;
@@ -39,14 +40,15 @@ const MessageForm: FC<MessageFormProps> = ({ sendMessage }) => {
           placeholder="Message"
           value={message}
           onChange={handleChangeMessage}
-          multiline
+          // multiline
           minRows={1}
           maxRows={5}
           fullWidth
           ref={messageRef}
+          sx={{ backgroundColor: '#fff' }}
         />
         <Button variant="contained" type="submit" disableElevation>
-          Send
+          <SendIcon />
         </Button>
       </Stack>
     </form>
