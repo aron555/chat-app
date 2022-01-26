@@ -3,6 +3,7 @@ function formatMessage(userId, chatId, content) {
     userId,
     chatId,
     content,
+    contentType: 0,
     date: Date.now(),
   };
 }
