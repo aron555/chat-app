@@ -1,4 +1,4 @@
-import React, { FC, useMemo, useRef } from 'react';
+import React, { FC, useEffect, useMemo, useRef } from 'react';
 import {
   Avatar,
   Box,
@@ -19,6 +19,18 @@ import { getChatMessages } from '../store/chat';
 export interface ChatPageProps {
   chatId: string;
 }
+
+const AlwaysScrollToBottom = () => {
+  const elementRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!elementRef?.current) return;
+
+    elementRef.current.scrollIntoView();
+  });
+
+  return <div ref={elementRef} />;
+};
 
 const ChatPage: FC<ChatPageProps> = ({ chatId }) => {
   const chat = useSelector((state: RootState) => state.chat);
@@ -83,6 +95,7 @@ const ChatPage: FC<ChatPageProps> = ({ chatId }) => {
                 )}
               </Card>
             ))}
+          <AlwaysScrollToBottom />
         </Stack>
       </Box>
       <input ref={messageRef} />
