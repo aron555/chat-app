@@ -15,6 +15,7 @@ import { ContentType, Message } from '../store/types';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { getChatMessages } from '../store/chat';
+import MessageForm from '../components/Messages/MessageForm';
 
 export interface ChatPageProps {
   chatId: string;
@@ -98,8 +99,9 @@ const ChatPage: FC<ChatPageProps> = ({ chatId }) => {
           <AlwaysScrollToBottom />
         </Stack>
       </Box>
-      <input ref={messageRef} />
-      <button onClick={handleSendMessage}>Send</button>
+      <Box sx={{p: 1}}>
+        <MessageForm sendMessage={sendMessage} />
+      </Box>
     </Box>
   );
 };
