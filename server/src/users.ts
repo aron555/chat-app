@@ -1,7 +1,7 @@
 const users: any[] = [];
 
 // Join user to chat
-function userJoin(id: string, token: string, userId: string, chatId: string) {
+const userJoin = (id: string, token: string, userId: string, chatId: string) => {
   // TODO: Verify token here and if ok add use
 
   if (!token) {
@@ -18,12 +18,12 @@ function userJoin(id: string, token: string, userId: string, chatId: string) {
 }
 
 // Get current user
-function getCurrentUser(id: string) {
+const getCurrentUser = (id: string) => {
   return users.find((user) => user.id === id);
 }
 
 // User leaves chat
-function userLeave(id: string) {
+const userLeave = (id: string) => {
   const index = users.findIndex((user) => user.id === id);
 
   if (index !== -1) {

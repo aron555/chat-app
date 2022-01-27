@@ -79,7 +79,7 @@ const ChatPage: FC<ChatPageProps> = ({ chatId }) => {
           borderBottom: 1,
           borderColor: 'divider',
           display: 'flex',
-          alignItems: 'center'
+          alignItems: 'center',
         }}
       >
         <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', ml: '16px' }}>
@@ -95,13 +95,17 @@ const ChatPage: FC<ChatPageProps> = ({ chatId }) => {
                 key={message.id}
                 sx={{
                   width: 'min(400px, 100%)',
-                  alignSelf: user?.id === message.userId ? 'end' : 'start',
+                  alignSelf: user?.id === message?.user?.id ? 'end' : 'start',
                 }}
               >
                 <CardHeader
-                  avatar={<Avatar />}
-                  title={message.userId}
-                  subheader={message.createdAt}
+                  avatar={<Avatar src={message?.user?.profileImage} />}
+                  title={message?.user?.fullname || message?.user?.username}
+                  subheader={`${new Date(
+                    message.createdAt * 1000
+                  ).toLocaleDateString()} at ${new Date(
+                    message.createdAt * 1000
+                  ).toLocaleTimeString()}`}
                 />
                 {+message.contentType === ContentType.Image && (
                   <CardMedia component="img" image={message.content} />

@@ -44,7 +44,7 @@ export const useChat = (chatId: string | undefined) => {
       if (message.chatId === chatId) {
         setMessages((prev) => [...prev, message]);
       } else {
-        dispatch(incrementChatUnreadMessagesCounter({ chatId: message.chatId }));
+        message?.chatId && dispatch(incrementChatUnreadMessagesCounter({ chatId: message.chatId }));
       }
     });
 

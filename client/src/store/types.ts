@@ -25,12 +25,12 @@ export enum ContentType {
 
 export interface Message {
   id: string;
-  userId: string;
+  userId?: string;
   user?: User;
-  chatId: string;
+  chatId?: string;
   content: string;
   contentType: ContentType;
-  createdAt: string;
+  createdAt: number;
 }
 
 export interface ApiResponse<Type> {
