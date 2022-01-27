@@ -1,16 +1,40 @@
-import { API_HOST, GetChatMessages, Message } from './types';
+import { API_HOST, Chat, GetChatInfo, GetChatMessages, Message } from './types';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 export interface ChatState {
+  chat: Chat | null,
   messages: Message[] | null;
   isLoading: boolean;
 }
 
 const initialState: ChatState = {
+  chat: null,
   messages: null,
   isLoading: false,
 };
+
+export const getChatInfo = createAsyncThunk<
+  { chat: Chat },
+  { token: string; chatId: string },
+  { rejectValue: { message: string } }
+  >('chats/getChatInfo', async ({ token, chatId }, { rejectWithValue }) => {
+  try {
+    const userChats = await axios.get<GetChatInfo>(API_HOST + `/api/chats/${chatId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const data = userChats.data.data;
+
+    if (!data?.chat) throw new Error();
+
+    const chat = data.chat;
+
+    return { chat };
+  } catch (error: any) {
+    return rejectWithValue({ message: 'Failed to get chat info' });
+  }
+});
 
 export const getChatMessages = createAsyncThunk<
   { messages: Message[] },
@@ -39,6 +63,19 @@ export const chatSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    builder.addCase(getChatInfo.pending, (state) => {
+      state.chat = null;
+      state.isLoading = true;
+    });
+    builder.addCase(getChatInfo.fulfilled, (state, action) => {
+      state.chat = action.payload.chat;
+      state.isLoading = false;
+    });
+    builder.addCase(getChatInfo.rejected, (state) => {
+      state.messages = null;
+      state.isLoading = false;
+    });
+
     builder.addCase(getChatMessages.pending, (state) => {
       state.messages = null;
       state.isLoading = true;

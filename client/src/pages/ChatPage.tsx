@@ -14,7 +14,7 @@ import { useChat } from '../hooks/useChat';
 import { ContentType, Message } from '../store/types';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
-import { getChatMessages } from '../store/chat';
+import { getChatInfo, getChatMessages } from '../store/chat';
 import MessageForm from '../components/Messages/MessageForm';
 
 export interface ChatPageProps {
@@ -47,6 +47,7 @@ const ChatPage: FC<ChatPageProps> = ({ chatId }) => {
 
     console.log('get chat messages', chatId);
 
+    dispatch(getChatInfo({ token, chatId }));
     dispatch(getChatMessages({ token, chatId }));
   }, [chatId]);
 

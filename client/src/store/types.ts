@@ -43,3 +43,5 @@ export type GetUserInfoByTokenResponse = ApiResponse<{ user: User }>;
 export type GetUserChatsResponse = ApiResponse<{ chats: Chat[] }>;
 
 export type GetChatMessages = ApiResponse<{ messages: Message[] }>;
+
+export type GetChatInfo = ApiResponse<{ chat: Chat }>;
