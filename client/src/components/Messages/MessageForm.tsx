@@ -43,9 +43,10 @@ const MessageForm: FC<MessageFormProps> = ({ sendMessage }) => {
           // multiline
           minRows={1}
           maxRows={5}
+          autoComplete="false"
           fullWidth
           ref={messageRef}
-          sx={{ backgroundColor: '#fff' }}
+          sx={{ backgroundColor: '#fff', borderRadius: '5px' }}
         />
         <Button variant="contained" type="submit" disableElevation>
           <SendIcon />
