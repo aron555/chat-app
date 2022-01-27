@@ -47,8 +47,10 @@ export const useChat = (chatId: string | undefined) => {
     return () => {
       // @ts-ignore
       socketRef.current.disconnect();
+
+      setMessages([]);
     };
-  }, [chats, user]);
+  }, [chats, user, chatId]);
 
   const sendMessage: SendMessage = (messageText) => {
     if (!user.isLogged || !user?.user) return;

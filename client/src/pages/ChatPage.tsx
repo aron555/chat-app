@@ -43,7 +43,9 @@ const ChatPage: FC<ChatPageProps> = ({ chatId }) => {
   useMemo(() => {
     const token = localStorage.getItem('token');
 
-    if (!token) return;
+    if (!token || !chatId?.length) return;
+
+    console.log('get chat messages', chatId);
 
     dispatch(getChatMessages({ token, chatId }));
   }, [chatId]);
