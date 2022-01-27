@@ -50,6 +50,13 @@ export const chatsSlice = createSlice({
         state.chats[index].unreadMessagesCount = 1;
       }
     },
+    resetChatUnreadMessagesCounter(state, action: PayloadAction<{ chatId: string }>) {
+      if (!state.chats) return;
+
+      const index = state.chats.findIndex((chat) => chat.id === action.payload.chatId);
+
+      state.chats[index].unreadMessagesCount = 0;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getUserChatsByToken.pending, (state) => {
@@ -69,4 +76,4 @@ export const chatsSlice = createSlice({
 
 export default chatsSlice.reducer;
 
-export const { incrementChatUnreadMessagesCounter } = chatsSlice.actions;
+export const { incrementChatUnreadMessagesCounter, resetChatUnreadMessagesCounter } = chatsSlice.actions;

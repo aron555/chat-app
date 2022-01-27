@@ -72,7 +72,7 @@ const ChatsPage: FC = () => {
               to={`/chats`}
               style={{
                 textDecoration: 'none',
-                color: 'unset',
+                color: '#000',
                 textAlign: 'left',
                 textTransform: 'none',
                 padding: '12px 16px',
