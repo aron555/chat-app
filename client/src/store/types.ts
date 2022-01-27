@@ -12,6 +12,10 @@ export interface Chat {
   name: string;
 }
 
+export interface ChatState extends Chat {
+  unreadMessagesCount?: number;
+}
+
 export enum ContentType {
   Text,
   Image,

@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import io, { Socket } from 'socket.io-client';
 import { ContentType, Message } from '../store/types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
+import { incrementChatUnreadMessagesCounter } from '../store/chats';
 
 const WS_SERVER_HOST: string = process.env.REACT_APP_WS_SERVER_HOST || 'http://localhost:7777';
 
@@ -12,6 +13,7 @@ export const useChat = (chatId: string | undefined) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const user = useSelector((state: RootState) => state.auth);
   const chats = useSelector((state: RootState) => state.chats);
+  const dispatch = useDispatch();
 
   const socketRef = useRef<Socket | null>(null);
 
@@ -41,6 +43,8 @@ export const useChat = (chatId: string | undefined) => {
 
       if (message.chatId === chatId) {
         setMessages((prev) => [...prev, message]);
+      } else {
+        dispatch(incrementChatUnreadMessagesCounter({ chatId: message.chatId }));
       }
     });
 

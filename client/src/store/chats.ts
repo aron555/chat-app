@@ -1,9 +1,9 @@
-import { API_HOST, Chat, GetUserChatsResponse } from './types';
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { API_HOST, Chat, ChatState, GetUserChatsResponse } from './types';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 export interface ChatsState {
-  chats: Chat[] | null;
+  chats: ChatState[] | null;
   isLoading: boolean;
 }
 
@@ -37,7 +37,20 @@ export const getUserChatsByToken = createAsyncThunk<
 export const chatsSlice = createSlice({
   name: 'chats',
   initialState,
-  reducers: {},
+  reducers: {
+    incrementChatUnreadMessagesCounter(state, action: PayloadAction<{ chatId: string }>) {
+      if (!state.chats) return;
+
+      const index = state.chats.findIndex((chat) => chat.id === action.payload.chatId);
+
+      if (state.chats[index].unreadMessagesCount) {
+        // @ts-ignore
+        state.chats[index].unreadMessagesCount++;
+      } else {
+        state.chats[index].unreadMessagesCount = 1;
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(getUserChatsByToken.pending, (state) => {
       state.chats = null;
@@ -55,3 +68,5 @@ export const chatsSlice = createSlice({
 });
 
 export default chatsSlice.reducer;
+
+export const { incrementChatUnreadMessagesCounter } = chatsSlice.actions;

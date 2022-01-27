@@ -1,5 +1,5 @@
 import React, { FC, useEffect } from 'react';
-import { Box, Tab, Tabs, Typography, CircularProgress, Avatar, Chip } from '@mui/material';
+import { Box, Tab, Tabs, Typography, CircularProgress, Avatar, Chip, Badge } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { getUserChatsByToken } from '../store/chats';
@@ -103,11 +103,16 @@ const ChatsPage: FC = () => {
                       color: 'unset',
                       textAlign: 'left',
                       textTransform: 'none',
-                      padding: '12px 16px',
+                      padding: '16px 16px',
                       width: '100%',
                     }}
                   >
-                    {chat.name}
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                      <Badge badgeContent={chat?.unreadMessagesCount} color="primary">
+                        <Avatar />
+                      </Badge>
+                      <Typography sx={{ ml: '8px' }}>{chat.name}</Typography>
+                    </Box>
                   </Link>
                 }
               />
