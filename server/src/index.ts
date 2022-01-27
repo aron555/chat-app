@@ -1,14 +1,14 @@
-const http = require('http');
-const express = require('express');
-const socketio = require('socket.io');
-const { userJoin, getCurrentUser, userLeave } = require('./users');
-const formatMessage = require('./messages');
-const cors = require('cors');
+import http from 'http';
+import express from 'express';
+import { Server } from 'socket.io';
+import { userJoin, getCurrentUser, userLeave } from './users';
+import { formatMessage } from './messages';
+import cors from 'cors';
 
 const app = express();
 app.use(cors({ origin: '*' }));
 const server = http.createServer(app);
-const io = socketio(server, {
+const io = new Server(server, {
   cors: {
     origin: '*',
     methods: ['GET', 'POST'],
