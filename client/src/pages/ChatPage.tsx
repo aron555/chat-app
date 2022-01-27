@@ -76,8 +76,15 @@ const ChatPage: FC<ChatPageProps> = ({ chatId }) => {
           backgroundColor: '#fff',
           borderBottom: 1,
           borderColor: 'divider',
+          display: 'flex',
+          alignItems: 'center'
         }}
-      ></Box>
+      >
+        <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', ml: '16px' }}>
+          <Avatar src={chat.chat?.image || undefined} />
+          <Typography sx={{ ml: '8px' }}>{chat.chat?.name}</Typography>
+        </Box>
+      </Box>
       <Box className="chatMessagesContainer" sx={{ height: '100%', overflow: 'hidden auto' }}>
         <Stack spacing={2} sx={{ m: 1 }}>
           {chat?.messages &&
