@@ -26,8 +26,19 @@ export const useChat = () => {
       token: localStorage.getItem('token'),
     });
 
+    return () => {
+      // @ts-ignore
+      socketRef.current.disconnect();
+    };
+  }, [user]);
+
+  useEffect(() => {
+    if (!chat?.id || !socketRef?.current) return;
+
+    console.log('chat switched to', chat.id);
+
     socketRef.current.on('message', (message: Message) => {
-      console.log('got message from server', message);
+      console.log('got message from server', { message, chat });
 
       if (chat?.id && message.chatId === chat.id) {
         dispatch(addMessageToCurrentChat({ message }));
@@ -37,10 +48,10 @@ export const useChat = () => {
     });
 
     return () => {
-      // @ts-ignore
-      socketRef.current.disconnect();
+      if (!socketRef?.current) return;
+      socketRef.current.removeAllListeners('message');
     };
-  }, [user]);
+  }, [socketRef, chat]);
 
   const sendMessage: SendMessage = (content, contentType = ContentType.Text) => {
     if (!user.isLogged || !user?.user) return false;
