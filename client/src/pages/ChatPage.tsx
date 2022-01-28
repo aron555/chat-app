@@ -10,7 +10,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { useChat } from '../hooks/useChat';
+import { SendMessage } from '../hooks/useChat';
 import { ContentType, Message } from '../store/types';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
@@ -20,6 +20,7 @@ import { resetChatUnreadMessagesCounter } from '../store/chats';
 
 export interface ChatPageProps {
   chatId: string;
+  sendMessage: SendMessage;
 }
 
 const AlwaysScrollToBottom = () => {
@@ -34,12 +35,10 @@ const AlwaysScrollToBottom = () => {
   return <div ref={elementRef} />;
 };
 
-const ChatPage: FC<ChatPageProps> = ({ chatId }) => {
+const ChatPage: FC<ChatPageProps> = ({ chatId, sendMessage }) => {
   const chat = useSelector((state: RootState) => state.chat);
   const user = useSelector((state: RootState) => state.auth.user);
   const dispatch = useDispatch();
-
-  const { messages, sendMessage } = useChat(chatId);
 
   useMemo(() => {
     const token = localStorage.getItem('token');
@@ -90,7 +89,7 @@ const ChatPage: FC<ChatPageProps> = ({ chatId }) => {
       <Box className="chatMessagesContainer" sx={{ height: '100%', overflow: 'hidden auto' }}>
         <Stack spacing={2} sx={{ m: 1 }}>
           {chat?.messages &&
-            [...chat.messages, ...messages].map((message: Message) => (
+            chat.messages.map((message: Message) => (
               <Card
                 key={message.id}
                 sx={{

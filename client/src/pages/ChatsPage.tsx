@@ -8,14 +8,13 @@ import {
   Avatar,
   Chip,
   Badge,
-  IconButton,
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { getUserChatsByToken } from '../store/chats';
 import { Link, useParams } from 'react-router-dom';
 import ChatPage from './ChatPage';
-import { ArrowRight, Settings } from '@mui/icons-material';
+import { useChat } from '../hooks/useChat';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -36,6 +35,8 @@ const ChatsPage: FC = () => {
   const dispatch = useDispatch();
   const chats = useSelector((state: RootState) => state.chats);
   const user = useSelector((state: RootState) => state.auth.user);
+
+  const { sendMessage } = useChat();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -93,51 +94,7 @@ const ChatsPage: FC = () => {
               {user && (
                 <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                   <Avatar src={user.profileImage || undefined} />
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      width: '100%',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Typography sx={{ ml: '8px' }}>
-                      {user.fullname || `@${user.username}`}
-                    </Typography>
-                    <IconButton
-                      size="large"
-                      sx={{
-                        '& svg': {
-                          color: 'rgba(0,0,0,0.8)',
-                          transition: '0.2s',
-                          transform: 'translateX(0) rotate(0)',
-                        },
-                        '&:hover, &:focus': {
-                          bgcolor: 'unset',
-                          '& svg:first-of-type': {
-                            transform: 'translateX(-4px) rotate(-20deg)',
-                          },
-                          '& svg:last-of-type': {
-                            right: 0,
-                            opacity: 1,
-                          },
-                        },
-                        '&:after': {
-                          content: '""',
-                          position: 'absolute',
-                          height: '80%',
-                          display: 'block',
-                          left: 0,
-                          width: '1px',
-                          bgcolor: 'divider',
-                        },
-                        mr: '16px',
-                      }}
-                    >
-                      <Settings />
-                      <ArrowRight sx={{ position: 'absolute', right: 4, opacity: 0 }} />
-                    </IconButton>
-                  </Box>
+                  <Typography sx={{ ml: '8px' }}>{user.fullname || `@${user.username}`}</Typography>
                 </Box>
               )}
             </Link>
@@ -183,7 +140,7 @@ const ChatsPage: FC = () => {
           </Box>
         </TabPanel>
       ) : (
-        <TabPanel>{chatId && <ChatPage chatId={chatId} />}</TabPanel>
+        <TabPanel>{chatId && <ChatPage chatId={chatId} sendMessage={sendMessage} />}</TabPanel>
       )}
     </Box>
   );
