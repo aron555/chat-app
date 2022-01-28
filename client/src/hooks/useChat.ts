@@ -1,48 +1,36 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import io, { Socket } from 'socket.io-client';
 import { ContentType, Message } from '../store/types';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { incrementChatUnreadMessagesCounter } from '../store/chats';
+import { addMessageToCurrentChat } from '../store/chat';
 
 const WS_SERVER_HOST: string = process.env.REACT_APP_WS_SERVER_HOST || 'http://localhost:7777';
 
-export type SendMessage = (messageText: string) => void;
+export type SendMessage = (content: string, contentType: ContentType) => boolean;
 
-export const useChat = (chatId: string | undefined) => {
-  const [messages, setMessages] = useState<Message[]>([]);
+export const useChat = () => {
   const user = useSelector((state: RootState) => state.auth);
-  const chats = useSelector((state: RootState) => state.chats);
+  const chat = useSelector((state: RootState) => state.chat.chat);
   const dispatch = useDispatch();
 
   const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
     if (!user.isLogged || !user?.user) return;
-    if (chats.isLoading || !chats?.chats) return;
 
     socketRef.current = io(WS_SERVER_HOST);
 
-    // socketRef.current.emit('chat:join', { userId: user.user.id, token: 'token', chatId });
-
-    // Join every chat user participate in
-    for (const chat of chats.chats) {
-      socketRef.current.emit('chat:join', {
-        userId: user.user.id,
-        token: 'token',
-        chatId: chat.id,
-      });
-    }
-
-    // socketRef.current.on('users', (users) => {
-    //   setUsers(users);
-    // });
+    socketRef.current.emit('user:join', {
+      token: localStorage.getItem('token'),
+    });
 
     socketRef.current.on('message', (message: Message) => {
       console.log('got message from server', message);
 
-      if (message.chatId === chatId) {
-        setMessages((prev) => [...prev, message]);
+      if (chat?.id && message.chatId === chat.id) {
+        dispatch(addMessageToCurrentChat({ message }));
       } else {
         message?.chatId && dispatch(incrementChatUnreadMessagesCounter({ chatId: message.chatId }));
       }
@@ -51,22 +39,23 @@ export const useChat = (chatId: string | undefined) => {
     return () => {
       // @ts-ignore
       socketRef.current.disconnect();
-
-      setMessages([]);
     };
-  }, [chats, user, chatId]);
+  }, [user]);
 
-  const sendMessage: SendMessage = (messageText) => {
-    if (!user.isLogged || !user?.user) return;
+  const sendMessage: SendMessage = (content, contentType = ContentType.Text) => {
+    if (!user.isLogged || !user?.user) return false;
+    if (!chat?.id) return false;
 
     // @ts-ignore
     socketRef.current.emit('message:send', {
       userId: user.user.id,
-      chatId: chatId,
-      content: messageText,
-      contentType: ContentType.Text,
+      chatId: chat.id,
+      content,
+      contentType,
     });
+
+    return true;
   };
 
-  return { messages, sendMessage };
+  return { sendMessage };
 };

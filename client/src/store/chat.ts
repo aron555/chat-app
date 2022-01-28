@@ -1,5 +1,5 @@
 import { API_HOST, Chat, GetChatInfo, GetChatMessages, Message } from './types';
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 export interface ChatState {
@@ -61,7 +61,11 @@ export const getChatMessages = createAsyncThunk<
 export const chatSlice = createSlice({
   name: 'chat',
   initialState,
-  reducers: {},
+  reducers: {
+    addMessageToCurrentChat(state, action: PayloadAction<{message: Message}>) {
+      state.messages = [...state.messages ?? [], action.payload.message];
+    }
+  },
   extraReducers: (builder) => {
     builder.addCase(getChatInfo.pending, (state) => {
       state.chat = null;
@@ -92,3 +96,5 @@ export const chatSlice = createSlice({
 });
 
 export default chatSlice.reducer;
+
+export const { addMessageToCurrentChat } = chatSlice.actions;
