@@ -40,7 +40,7 @@ const MessageForm: FC<MessageFormProps> = ({ sendMessage }) => {
           // multiline
           minRows={1}
           maxRows={5}
-          autoComplete="false"
+          autoComplete="off"
           fullWidth
           autoFocus
           ref={messageRef}
