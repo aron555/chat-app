@@ -1,10 +1,21 @@
 import React, { FC, useEffect } from 'react';
-import { Box, Tab, Tabs, Typography, CircularProgress, Avatar, Chip, Badge } from '@mui/material';
+import {
+  Box,
+  Tab,
+  Tabs,
+  Typography,
+  CircularProgress,
+  Avatar,
+  Chip,
+  Badge,
+  IconButton,
+} from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { getUserChatsByToken } from '../store/chats';
 import { Link, useParams } from 'react-router-dom';
 import ChatPage from './ChatPage';
+import { ArrowRight, Settings } from '@mui/icons-material';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -59,7 +70,7 @@ const ChatsPage: FC = () => {
         sx={{
           borderLeft: 1,
           borderRight: 1,
-          width: 'max(350px, 20%)',
+          width: 'max(400px, 20%)',
           borderColor: 'divider',
           padding: 0,
         }}
@@ -82,7 +93,51 @@ const ChatsPage: FC = () => {
               {user && (
                 <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                   <Avatar src={user.profileImage || undefined} />
-                  <Typography sx={{ ml: '8px' }}>{user.fullname || `@${user.username}`}</Typography>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      width: '100%',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Typography sx={{ ml: '8px' }}>
+                      {user.fullname || `@${user.username}`}
+                    </Typography>
+                    <IconButton
+                      size="large"
+                      sx={{
+                        '& svg': {
+                          color: 'rgba(0,0,0,0.8)',
+                          transition: '0.2s',
+                          transform: 'translateX(0) rotate(0)',
+                        },
+                        '&:hover, &:focus': {
+                          bgcolor: 'unset',
+                          '& svg:first-of-type': {
+                            transform: 'translateX(-4px) rotate(-20deg)',
+                          },
+                          '& svg:last-of-type': {
+                            right: 0,
+                            opacity: 1,
+                          },
+                        },
+                        '&:after': {
+                          content: '""',
+                          position: 'absolute',
+                          height: '80%',
+                          display: 'block',
+                          left: 0,
+                          width: '1px',
+                          bgcolor: 'divider',
+                        },
+                        mr: '16px',
+                      }}
+                    >
+                      <Settings />
+                      <ArrowRight sx={{ position: 'absolute', right: 4, opacity: 0 }} />
+                    </IconButton>
+                  </Box>
                 </Box>
               )}
             </Link>
