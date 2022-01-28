@@ -40,3 +40,5 @@ export interface ApiResponse<Type> {
 export type GetUserInfoByTokenResponse = ApiResponse<{ user: User }>;
 
 export type GetUserChatsResponse = ApiResponse<{ chats: Chat[] }>;
+
+export type AddMessageToChatResponse = ApiResponse<{ message: string, createdMessageId: string }>;

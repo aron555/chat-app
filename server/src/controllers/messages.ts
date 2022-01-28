@@ -1,6 +1,6 @@
 export const formatMessage = (user: any, message: any) => {
   return {
-    id: Math.floor(100 + Math.random() * 9999),
+    id: message.id,
     user: {
       id: user.userId,
       username: user.username,

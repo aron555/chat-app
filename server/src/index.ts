@@ -7,6 +7,7 @@ import cors from 'cors';
 import { Message, UserJoin } from './types';
 import dotenv from 'dotenv';
 import { subscribeToUserChats } from './controllers/chats';
+import { addMessageToChat } from './api/messages';
 
 dotenv.config();
 
@@ -38,7 +39,7 @@ io.on('connection', (socket) => {
     await subscribeToUserChats({ token, socket });
   });
 
-  socket.on('message:send', (message: Message) => {
+  socket.on('message:send', async (message: Message) => {
     const user = getUserById(socket.id);
 
     if (!user) {
@@ -49,7 +50,13 @@ io.on('connection', (socket) => {
 
     console.log('message:send', { user, message });
 
-    io.to(message.chatId).emit('message', formatMessage(user, message));
+    const sentMessageId = await addMessageToChat({
+      token: user.token,
+      chatId: message.chatId,
+      message: { content: message.content, contentType: message.contentType },
+    });
+
+    io.to(message.chatId).emit('message', formatMessage(user, { ...message, id: sentMessageId }));
   });
 
   socket.on('disconnect', () => {
