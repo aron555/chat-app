@@ -12,12 +12,6 @@ const MessageForm: FC<MessageFormProps> = ({ sendMessage }) => {
   const [message, setMessage] = useState('');
   const messageRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (!messageRef?.current) return;
-
-    messageRef.current.focus();
-  }, [messageRef]);
-
   const handleChangeMessage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(event.target.value);
   };
@@ -48,6 +42,7 @@ const MessageForm: FC<MessageFormProps> = ({ sendMessage }) => {
           maxRows={5}
           autoComplete="false"
           fullWidth
+          autoFocus
           ref={messageRef}
           sx={{ backgroundColor: '#fff', borderRadius: '5px' }}
         />
