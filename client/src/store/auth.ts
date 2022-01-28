@@ -16,7 +16,7 @@ export const signIn = createAsyncThunk<
   { message: string },
   { username: string; password: string },
   { rejectValue: { message: string } }
->('auth/signIn', async ({ username, password }, { rejectWithValue }) => {
+>('auth/signIn', async ({ username, password }, { rejectWithValue, dispatch }) => {
   try {
     const signInResponse = await axios.post<SignInResponse>(API_HOST + '/api/auth/sign-in', {
       username,
@@ -29,6 +29,8 @@ export const signIn = createAsyncThunk<
 
     localStorage.setItem('token', data.jwt);
 
+    dispatch(getUserInfoByToken({ token: data.jwt }));
+
     return { message: 'Logged in' };
   } catch (error: any) {
     return rejectWithValue({ message: 'Failed to sign in' });
@@ -39,7 +41,7 @@ export const signUp = createAsyncThunk<
   { message: string },
   { username: string; password: string },
   { rejectValue: { message: string } }
->('auth/signUp', async ({ username, password }, { rejectWithValue }) => {
+>('auth/signUp', async ({ username, password }, { rejectWithValue, dispatch }) => {
   try {
     const signInResponse = await axios.post<SignInResponse>(API_HOST + '/api/auth/sign-up', {
       username,
@@ -51,6 +53,8 @@ export const signUp = createAsyncThunk<
     if (!data?.jwt) throw new Error();
 
     localStorage.setItem('token', data.jwt);
+
+    dispatch(getUserInfoByToken({ token: data.jwt }));
 
     return { message: 'Logged in' };
   } catch (error: any) {
