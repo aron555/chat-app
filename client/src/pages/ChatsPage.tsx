@@ -121,7 +121,7 @@ const ChatsPage: FC = () => {
                   >
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                       <Badge badgeContent={chat?.unreadMessagesCount} color="primary">
-                        <Avatar />
+                        <Avatar src={chat?.image || undefined} />
                       </Badge>
                       <Typography sx={{ ml: '8px' }}>{chat.name}</Typography>
                     </Box>
