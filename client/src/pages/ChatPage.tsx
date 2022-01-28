@@ -14,7 +14,7 @@ import { SendMessage } from '../hooks/useChat';
 import { ContentType, Message } from '../store/types';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
-import { getChatInfo, getChatMessages } from '../store/chat';
+import { getChatInfo, getChatMessages, getChatParticipants } from '../store/chat';
 import MessageForm from '../components/Messages/MessageForm';
 import { resetChatUnreadMessagesCounter } from '../store/chats';
 
@@ -49,6 +49,7 @@ const ChatPage: FC<ChatPageProps> = ({ chatId, sendMessage }) => {
 
     dispatch(getChatInfo({ token, chatId }));
     dispatch(getChatMessages({ token, chatId }));
+    dispatch(getChatParticipants({ token, chatId }));
     dispatch(resetChatUnreadMessagesCounter({ chatId }));
   }, [chatId]);
 

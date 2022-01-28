@@ -48,4 +48,6 @@ export type GetUserChatsResponse = ApiResponse<{ chats: Chat[] }>;
 
 export type GetChatMessages = ApiResponse<{ messages: Message[] }>;
 
+export type GetChatParticipants = ApiResponse<{ participants: User[] }>;
+
 export type GetChatInfo = ApiResponse<{ chat: Chat }>;

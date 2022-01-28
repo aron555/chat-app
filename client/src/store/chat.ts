@@ -1,15 +1,17 @@
-import { API_HOST, Chat, GetChatInfo, GetChatMessages, Message } from './types';
+import { API_HOST, Chat, GetChatInfo, GetChatMessages, GetChatParticipants, Message, User } from './types';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 export interface ChatState {
   chat: Chat | null,
+  participants: User[] | null;
   messages: Message[] | null;
   isLoading: boolean;
 }
 
 const initialState: ChatState = {
   chat: null,
+  participants: null,
   messages: null,
   isLoading: false,
 };
@@ -58,6 +60,29 @@ export const getChatMessages = createAsyncThunk<
   }
 });
 
+
+export const getChatParticipants = createAsyncThunk<
+  { participants: User[] },
+  { token: string; chatId: string },
+  { rejectValue: { message: string } }
+  >('chats/getChatParticipants', async ({ token, chatId }, { rejectWithValue }) => {
+  try {
+    const userChats = await axios.get<GetChatParticipants>(API_HOST + `/api/chats/${chatId}/users`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const data = userChats.data.data;
+
+    if (!data?.participants) throw new Error();
+
+    const participants = data.participants;
+
+    return { participants };
+  } catch (error: any) {
+    return rejectWithValue({ message: 'Failed to get chat participants' });
+  }
+});
+
 export const chatSlice = createSlice({
   name: 'chat',
   initialState,
@@ -89,6 +114,19 @@ export const chatSlice = createSlice({
       state.isLoading = false;
     });
     builder.addCase(getChatMessages.rejected, (state) => {
+      state.messages = null;
+      state.isLoading = false;
+    });
+
+    builder.addCase(getChatParticipants.pending, (state) => {
+      state.messages = null;
+      state.isLoading = true;
+    });
+    builder.addCase(getChatParticipants.fulfilled, (state, action) => {
+      state.participants = action.payload.participants;
+      state.isLoading = false;
+    });
+    builder.addCase(getChatParticipants.rejected, (state) => {
       state.messages = null;
       state.isLoading = false;
     });
