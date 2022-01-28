@@ -1,9 +1,16 @@
 import http from 'http';
 import express from 'express';
 import { Server } from 'socket.io';
-import { userJoin, getCurrentUser, userLeave } from './users';
-import { formatMessage } from './messages';
+import { userSignIn, getUserById, userLeave } from './controllers/users';
+import { formatMessage } from './controllers/messages';
 import cors from 'cors';
+import { Message, UserJoin } from './types';
+import dotenv from 'dotenv';
+import { subscribeToUserChats } from './controllers/chats';
+
+dotenv.config();
+
+export const API_URL = process.env.API_URL || 'http://chat.test';
 
 const app = express();
 app.use(cors({ origin: '*' }));
@@ -16,66 +23,42 @@ const io = new Server(server, {
 });
 
 io.on('connection', (socket) => {
-  // console.log({ socket });
-  // console.log({ auth: socket.auth });
-
-  socket.on('chat:join', ({ token, userId, chatId }) => {
-    // TODO:
-    // 1. Check if user token ok
-    // 2. Check if user can access chat
-
-    const user = userJoin(socket.id, token, userId, chatId);
+  socket.on('user:join', async ({ token }: UserJoin) => {
+    const user = await userSignIn(socket.id, token);
 
     if (!user) {
+      console.log('user:join | Empty user object', { user, token });
+
       return socket.disconnect();
     }
 
-    socket.join(user.chatId);
+    console.log('user:join', user);
 
-    console.log('chat:join', { user });
-
-    // Broadcast when a user connects
-    // socket.broadcast
-    //     .to(user.chatId)
-    //     .emit(
-    //         'message',
-    //         formatMessage(botName, `${user.username} has joined the chat`)
-    //     );
-
-    // Send users and room info
-    // io.to(user.chatId).emit('roomUsers', {
-    //     room: user.room,
-    //     users: getRoomUsers(user.room)
-    // });
+    // Join all user chats
+    await subscribeToUserChats({ token, socket });
   });
 
-  socket.on('message:send', (message) => {
-    const user = getCurrentUser(socket.id);
+  socket.on('message:send', (message: Message) => {
+    const user = getUserById(socket.id);
 
     if (!user) {
-      console.log('user not authorized');
+      console.log('message:send | User not found');
 
       return;
     }
 
     console.log('message:send', { user, message });
 
-    io.to(user.chatId).emit('message', formatMessage(user.userId, message.chatId, message.content, message.contentType));
+    io.to(message.chatId).emit(
+      'message',
+      formatMessage(user.id, message.chatId, message.content, message.contentType)
+    );
   });
 
   socket.on('disconnect', () => {
     const user = userLeave(socket.id);
 
     console.log('disconnect', { user });
-
-    // if (user) {
-    //   console.log('disconnect: user exists, set status to offline');
-    //
-    //   io.to(user.chatId).emit(
-    //     'message',
-    //     formatMessage(botName, `${user.username} has left the chat`)
-    //   );
-    // }
   });
 });
 
