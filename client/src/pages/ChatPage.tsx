@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo, useRef } from 'react';
+import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -17,6 +17,7 @@ import { RootState } from '../store/store';
 import { getChatInfo, getChatMessages, getChatParticipants } from '../store/chat';
 import MessageForm from '../components/Messages/MessageForm';
 import { resetChatUnreadMessagesCounter } from '../store/chats';
+import ChatDetails from '../components/ChatDetails/ChatDetails';
 
 export interface ChatPageProps {
   chatId: string;
@@ -45,7 +46,7 @@ const ChatPage: FC<ChatPageProps> = ({ chatId, sendMessage }) => {
 
     if (!token || !chatId?.length) return;
 
-    console.log('get chat messages', chatId);
+    console.log('get chat info', chatId);
 
     dispatch(getChatInfo({ token, chatId }));
     dispatch(getChatMessages({ token, chatId }));
@@ -82,10 +83,7 @@ const ChatPage: FC<ChatPageProps> = ({ chatId, sendMessage }) => {
           alignItems: 'center',
         }}
       >
-        <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', ml: '16px' }}>
-          <Avatar src={chat.chat?.image || undefined} />
-          <Typography sx={{ ml: '8px' }}>{chat.chat?.name}</Typography>
-        </Box>
+        <ChatDetails />
       </Box>
       <Box className="chatMessagesContainer" sx={{ height: '100%', overflow: 'hidden auto' }}>
         <Stack spacing={2} sx={{ m: 1 }}>
