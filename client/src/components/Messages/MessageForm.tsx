@@ -2,6 +2,7 @@ import React, { FC, FormEvent, useEffect, useRef, useState } from 'react';
 import { Button, Stack, TextField } from '@mui/material';
 import { SendMessage } from '../../hooks/useChat';
 import SendIcon from '@mui/icons-material/Send';
+import { ContentType } from '../../store/types';
 
 export interface MessageFormProps {
   sendMessage: SendMessage;
@@ -26,7 +27,9 @@ const MessageForm: FC<MessageFormProps> = ({ sendMessage }) => {
 
     if (!message.length) return;
 
-    sendMessage(message);
+    const messageSent = sendMessage(message, ContentType.Text);
+
+    if (!messageSent) return alert('Failed to send message, try again');
 
     setMessage('');
 
