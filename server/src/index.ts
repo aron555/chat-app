@@ -49,10 +49,7 @@ io.on('connection', (socket) => {
 
     console.log('message:send', { user, message });
 
-    io.to(message.chatId).emit(
-      'message',
-      formatMessage(user.id, message.chatId, message.content, message.contentType)
-    );
+    io.to(message.chatId).emit('message', formatMessage(user, message));
   });
 
   socket.on('disconnect', () => {
