@@ -1,6 +1,6 @@
 # Chat App
 Tech stack:
-1) PHP + mysql - Chat API (this repository)
+1) PHP + mysql - Chat API
 2) NodeJS + express + socket.io + typescript - web socket server for realtime messaging
 3) React + Redux Toolkit + Material UI + socket.io-client + typescript - web chat client
 
