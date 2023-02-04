@@ -11,7 +11,7 @@ import { addMessageToChat } from './api/messages';
 
 dotenv.config();
 
-export const API_URL = process.env.API_URL || 'http://chat.test';
+export const API_URL = process.env.API_URL || 'http://chat.loc';
 
 const app = express();
 app.use(cors({ origin: '*' }));

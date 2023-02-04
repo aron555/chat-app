@@ -1,6 +1,6 @@
-import axios from 'axios';
-import { API_URL } from '../index';
-import { GetUserInfoByTokenResponse, User } from '../types';
+import axios from "axios";
+import { API_URL } from "../index";
+import { GetUserInfoByTokenResponse, User } from "../types";
 
 export const getUserInfoByToken = async ({ token }: { token: string }): Promise<User> => {
   const currentUser = await axios.get<GetUserInfoByTokenResponse>(API_URL + '/api/users/me', {
@@ -11,7 +11,5 @@ export const getUserInfoByToken = async ({ token }: { token: string }): Promise<
 
   if (!data?.user) throw new Error('Failed to get user info');
 
-  const user = data.user;
-
-  return user;
+  return data.user;
 };
